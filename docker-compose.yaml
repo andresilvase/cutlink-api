@@ -1,0 +1,25 @@
+services:
+  cutlink-api:
+    container_name: cutlink-api
+    image: asfsengineer/cutlink-api
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis 
+    restart: always
+    environment:
+      - ALLOWED_ORIGINS=https://short.cutli.ink
+      - SHORTENED_BASE_URL=https://cutli.ink/
+      
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports: 
+      - "6379:6379"    
+    restart: always
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

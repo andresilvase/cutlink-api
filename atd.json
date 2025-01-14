@@ -1,0 +1,151 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:183631301890:task-definition/cutlink-task:25",
+    "containerDefinitions": [
+        {
+            "name": "cutlink-api",
+            "image": "183631301890.dkr.ecr.us-east-1.amazonaws.com/studies/cutlink:latest",
+            "cpu": 256,
+            "memory": 512,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "ALLOWED_ORIGINS",
+                    "value": "https://short.cutli.ink"
+                },
+                {
+                    "name": "SHORTENED_BASE_URL",
+                    "value": "https://cutli.ink/"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "linuxParameters": {
+                "initProcessEnabled": true
+            },
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/cutlink-api",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "apk add --no-cache curl",
+                    "curl -f http://localhost:8080/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 10
+            },
+            "systemControls": []
+        },
+        {
+            "name": "redis",
+            "image": "redis:alpine",
+            "cpu": 128,
+            "memory": 256,
+            "portMappings": [
+                {
+                    "containerPort": 6379,
+                    "hostPort": 6379,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "linuxParameters": {
+                "initProcessEnabled": true
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD",
+                    "redis-cli",
+                    "ping"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 5
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "cutlink-task",
+    "taskRoleArn": "arn:aws:iam::183631301890:role/ecsTaskRole",
+    "executionRoleArn": "arn:aws:iam::183631301890:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 25,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.25"
+        },
+        {
+            "name": "ecs.capability.extensible-ephemeral-storage"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "ephemeralStorage": {
+        "sizeInGiB": 21
+    },
+    "runtimePlatform": {
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-12-31T21:02:59.131Z",
+    "registeredBy": "arn:aws:iam::183631301890:root",
+    "enableFaultInjection": false,
+    "tags": []
+}
