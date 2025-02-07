@@ -6,18 +6,18 @@ import (
 	"os"
 	"strings"
 
-	"github.com/andresilvase/cutlink/cmd/api/routes"
+	routes "github.com/andresilvase/cutlink/cmd/api/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 )
 
 func handler() http.Handler {
-	handler := chi.NewMux()
+	router := chi.NewMux()
 
-	handler.Use(middleware.Recoverer)
-	handler.Use(middleware.RequestID)
-	handler.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
 
 	allowedOriginsEnv := os.Getenv("ALLOWED_ORIGINS")
 
@@ -33,13 +33,13 @@ func handler() http.Handler {
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	})
-	handler.Use(corsHandler.Handler)
+	router.Use(corsHandler.Handler)
 
-	handler.Route("/", func(r chi.Router) {
+	router.Route("/", func(r chi.Router) {
 		r.Get("/{shortenedUrl:[a-zA-Z0-9]+}", routes.FullURL)
 		r.Get("/health", routes.HealthCheck)
 		r.Post("/cut", routes.ShortenLink)
 	})
 
-	return handler
+	return router
 }

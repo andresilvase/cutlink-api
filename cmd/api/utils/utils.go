@@ -14,6 +14,7 @@ type Response struct {
 
 func SendResponse(w http.ResponseWriter, res Response, status int) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 
 	data, err := json.Marshal(res)
 	responseParseError := fmt.Errorf("error %w parsing response", err).Error()
@@ -27,8 +28,6 @@ func SendResponse(w http.ResponseWriter, res Response, status int) {
 		)
 		return
 	}
-
-	w.WriteHeader(status)
 
 	if _, err := w.Write(data); err != nil {
 		slog.Error(responseParseError)
