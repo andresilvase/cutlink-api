@@ -15,9 +15,9 @@ import (
 func handler() http.Handler {
 	router := chi.NewMux()
 
+	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.RequestID)
-	router.Use(middleware.Logger)
 
 	allowedOriginsEnv := os.Getenv("ALLOWED_ORIGINS")
 
